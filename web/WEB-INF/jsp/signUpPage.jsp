@@ -31,7 +31,7 @@
                   <td><input type="text" name="teamMemberOneName" id="teamMemberOneName" /></td>
               </tr>
               <tr>
-                  <td>队员1所属大学</td>
+                  <th>队员1所属大学</th>
                   <td><input type="text" name="teamMemberOneCollege" id="teamMemberOneCollege" /></td>
               </tr>
               <tr>
@@ -53,6 +53,10 @@
               <tr>
                   <th>电子邮箱</th>
                   <td><input type="text" name="EMailAddress" id="EMailAddress" /></td>
+              </tr>
+              <tr>
+                  <td><input type="submit" /></td>
+                  <td><input type="reset" /></td>
               </tr>
           </table>
       </form>
