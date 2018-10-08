@@ -9,6 +9,8 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+
 @Repository
 public class teamInfoRepositoryImpl implements teamInfoRepository {
     private SessionFactory sessionFactory;
@@ -36,7 +38,7 @@ public class teamInfoRepositoryImpl implements teamInfoRepository {
     public boolean writeTeamInfo(TeamInfoEntity teamInfo) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        /* test code
+        // test code
         TeamInfoEntity test = new TeamInfoEntity();
         test.setTeamName("testTeam");
         test.setTeamLeaderName("Chen Sicong");
@@ -45,9 +47,9 @@ public class teamInfoRepositoryImpl implements teamInfoRepository {
         test.setEmailAddress("sicong.chen@163.com");
         test.setTelNumber("15812418818");
         test.setSignupTime(new Timestamp(System.currentTimeMillis()));
-        */
+
         try{
-            session.save(teamInfo);
+            session.save(test);
             transaction.commit();
         } catch (Exception e){
             e.printStackTrace();

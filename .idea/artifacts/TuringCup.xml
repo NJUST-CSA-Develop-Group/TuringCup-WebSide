@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="TuringCup">
+    <output-path>$PROJECT_DIR$/out/artifacts/TuringCup</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="TuringCup-WebSide/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="TuringCup-WebSide" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Hibernate 5.3.6-5.3.6" />
+          <element id="library" level="project" name="Spring-4.3.18.RELEASE" />
+          <element id="library" level="project" name="Spring MVC-4.3.18.RELEASE" />
+          <element id="library" level="project" name="jstl" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/mysql-connector-java-8.0.12.jar" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
