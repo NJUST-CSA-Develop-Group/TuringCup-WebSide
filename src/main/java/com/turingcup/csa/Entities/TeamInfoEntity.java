@@ -1,10 +1,13 @@
 package com.turingcup.csa.Entities;
 
+import org.springframework.stereotype.Repository;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Repository
 @Table(name = "TeamInfo", schema = "turingcup", catalog = "")
 public class TeamInfoEntity {
     private int id;

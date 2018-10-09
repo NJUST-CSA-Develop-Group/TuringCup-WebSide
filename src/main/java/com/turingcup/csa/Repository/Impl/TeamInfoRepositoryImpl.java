@@ -1,7 +1,7 @@
 package com.turingcup.csa.Repository.Impl;
 
 import com.turingcup.csa.Entities.TeamInfoEntity;
-import com.turingcup.csa.Repository.teamInfoRepository;
+import com.turingcup.csa.Repository.TeamInfoRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -9,14 +9,12 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
-
 @Repository
-public class teamInfoRepositoryImpl implements teamInfoRepository {
+public class TeamInfoRepositoryImpl implements TeamInfoRepository {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public  teamInfoRepositoryImpl(SessionFactory sessionFactory){
+    public TeamInfoRepositoryImpl(SessionFactory sessionFactory){
         this.sessionFactory = sessionFactory;
     }
 
@@ -31,14 +29,13 @@ public class teamInfoRepositoryImpl implements teamInfoRepository {
                 return false;
         }
         return true;
-
     }
 
     @Override
     public boolean writeTeamInfo(TeamInfoEntity teamInfo) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        // test code
+        /*
         TeamInfoEntity test = new TeamInfoEntity();
         test.setTeamName("testTeam");
         test.setTeamLeaderName("Chen Sicong");
@@ -47,9 +44,9 @@ public class teamInfoRepositoryImpl implements teamInfoRepository {
         test.setEmailAddress("sicong.chen@163.com");
         test.setTelNumber("15812418818");
         test.setSignupTime(new Timestamp(System.currentTimeMillis()));
-
+        */
         try{
-            session.save(test);
+            session.save(teamInfo);
             transaction.commit();
         } catch (Exception e){
             e.printStackTrace();
@@ -59,4 +56,5 @@ public class teamInfoRepositoryImpl implements teamInfoRepository {
         }
         return true;
     }
+
 }
