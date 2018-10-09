@@ -18,8 +18,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo+Black">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/localization/messages_zh.js"></script>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/styles.min.signUp.css">
     <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
 </head>
@@ -41,14 +41,14 @@
         <h1 class="text-white" style="margin-top:30px;">参赛报名</h1>
     </div>
 </div>
-<div class="container" style="max-width:1000px;margin-top:30px;margin-bottom:30px;text-align:center;">
+<div class="container" style="max-width:600px;margin-top:30px;margin-bottom:30px;text-align:center;">
     <form id="signUpForm" action="<%=request.getContextPath()%>/signUp/teamInfoUpload.action" method="post">
         <div class="table-responsive input-group" style="font-family:'Source Sans Pro', sans-serif;text-align:center;vertical-align:middle;">
             <table class="table table-striped table-hover">
                 <tbody>
                 <tr>
                     <td style="width:30%;vertical-align:middle;">队名<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
-                    <td style="padding:2px;"><input name="teamName" id="teamName" class="form-control" type="text">
+                    <td ><input name="teamName" id="teamName" class="form-control" type="text">
                         <p class="text-secondary" style="margin-bottom:0;">请输入合法合规的正常队名。大赛组委会有权因队名问题取消报名资格。<br></p>
                         <p id="teamNameNotification" class="notification" style="margin-bottom:0;"></p>
                     </td>
@@ -102,12 +102,8 @@
             </table>
         </div>
         <button class="btn btn-primary btn-lg" type="button" style="text-align:center;min-width:150px;" id="TencentCaptcha"
-                      data-appid="2082377806"
+                      data-appid="2077933102"
                       data-cbfn="callback">报名</button>
-        <div class="form-group">
-            <label for="test">label</label>
-            <input class="input-control" id="test" name="test" type="text" />
-        </div>
     </form>
     <script>
         window.callback = function(res){
@@ -115,45 +111,125 @@
             // res（未通过验证）= {ret: 1, ticket: null}
             // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
             if(res.ret === 0){
-                var verifyCode = document.createElement("input");
-                verifyCode.type = "hidden";
-                verifyCode.name = "verifyCode";
-                verifyCode.value = res.ticket;
+                var ticket = document.createElement("input");
                 var form = document.getElementById("signUpForm");
-                form.appendChild(verifyCode);
+                var randStr = document.createElement("input");
+                ticket.type = "hidden";
+                ticket.name = "ticket";
+                ticket.value = res.ticket;
+                randStr.type = "hidden";
+                randStr.name = "randStr";
+                randStr.value = res.randstr;
+                form.appendChild(randStr);
+                form.appendChild(ticket);
                 $("#signUpForm").submit();
                 return true;
             }
             else{
+                alert("未通过验证码验证，请重试！");
                 return false;
             }
         };
 
-        $(function () {
-            $("#signUpForm").bootstrapValidator({
-                live: 'enabled',
-                submitButtons: '#TencentCaptcha',
-                feedbackIcons:{
-                    valid: 'glyphicon glyphicon-ok',
-                    invalid: 'glyphicon glyphicon-remove',
-                    validating: 'glyphicon glyphicon-refresh'
-                },
-                fields:{
-                    test:{
-                        notEmpty:{
-                            enable:true,
-                            message: 'test'
-                        },
-                        stringLength:{
-                            min: 6,
-                            max: 30,
-                            message: 'test'
+        $().ready(function () {
+            $("#signUpForm").validate({
+                rules:{
+                    teamName: {
+                        required: true,
+                        maxlength: 10,
+                        remote:{
+                            url: "<%=request.getContextPath()%>/signUp/checkTeamName.action",
+                            type: "post",
+                            data:{
+                                teamName: function () {
+                                    return $("#teamName").val();
+                                }
+                            }
                         }
-
+                    },
+                    teamLeaderName:{
+                        required: true,
+                        maxlength: 10
+                    },
+                    teamLeaderCollege:{
+                        required: true,
+                        maxlength: 10
+                    },
+                    teamMemberOneName:{
+                        maxlength: 10
+                    },
+                    teamMemberOneCollege:{
+                        required: function () {
+                            return document.getElementById("teamMemberOneName").value !== "";
+                        },
+                        maxlength: 10
+                    },
+                    teamMemberTwoName:{
+                        maxlength: 10
+                    },
+                    teamMemberTwoCollege:{
+                        required: function () {
+                            return document.getElementById("teamMemberTwoName").value !== "";
+                        },
+                        maxlength: 10
+                    },
+                    QQ:{
+                        required: true,
+                        rangelength:[7,12]
+                    },
+                    EMailAddress:{
+                        required: true,
+                        email: true
+                    },
+                    telNumber:{
+                        required: true,
+                        rangelength:[11,11]
+                    }
+                },
+                messages:{
+                    teamName:{
+                        required: "请输入队名",
+                        maxlength: "请输入小于10个字符的队名",
+                        remote: "队名已存在"
+                    },
+                    teamLeaderName:{
+                        required: "请输入队长姓名",
+                        maxlength: "请输入小于10个字符的姓名"
+                    },
+                    teamLeaderCollege:{
+                        required: "请输入队长学校",
+                        maxlength: "请输入小于10个字符"
+                    },
+                    teamMemberOneName:{
+                        required: "请输入组员姓名",
+                        maxlength: "请输入小于10个字符"
+                    },
+                    teamMemberOneCollege:{
+                        required: "请输入组员学校",
+                        maxlength: "请输入小于10个字符"
+                    },
+                    teamMemberTwoName:{
+                        required: "请输入组员姓名",
+                        maxlength: "请输入小于10个字符"
+                    },
+                    teamMemberTwoCollege:{
+                        required: "请输入组员学校",
+                        maxlength: "请输入小于10个字符"
+                    },
+                    QQ:{
+                        required: "请输入QQ",
+                        rangelength: "请输入7-12位的QQ号码"
+                    },
+                    EMailAddress:{
+                        required: "请输入Email地址",
+                        email:"请输入有效的Email地址"
+                    },
+                    telNumber:{
+                      required: "请输入电话号码",
+                      rangelength: "请输入11位有效电话号码"
                     }
                 }
-
-            });
+            })
         })
 
     </script>

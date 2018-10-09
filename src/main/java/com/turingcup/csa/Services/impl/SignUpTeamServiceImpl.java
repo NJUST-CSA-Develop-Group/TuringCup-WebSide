@@ -20,8 +20,8 @@ public class SignUpTeamServiceImpl implements SignUpTeamService {
         this.teamInfoRepository = teamInfoRepository;
     }
     @Override
-    public boolean checkMember(String members) {
-        return false;
+    public boolean checkTeamName(String teamName) {
+        return teamInfoRepository.checkContainData("teamName", teamName);
     }
 
     @Override
@@ -46,7 +46,12 @@ public class SignUpTeamServiceImpl implements SignUpTeamService {
             teamInfo.setTeamMember2College(request.getParameter("teamMemberTwoCollege"));
         }
         teamInfo.setSignupTime(new Timestamp(System.currentTimeMillis()));
-        return teamInfoRepository.writeTeamInfo(teamInfo);
+        int teamID = teamInfoRepository.writeTeamInfo(teamInfo);
+        if(teamID != -1){
+            request.setAttribute("teamID", teamID);
+            return true;
+        }
+        return false;
 
     }
 }

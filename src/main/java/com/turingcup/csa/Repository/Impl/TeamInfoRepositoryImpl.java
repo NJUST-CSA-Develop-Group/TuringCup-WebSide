@@ -9,6 +9,8 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class TeamInfoRepositoryImpl implements TeamInfoRepository {
     private SessionFactory sessionFactory;
@@ -19,22 +21,20 @@ public class TeamInfoRepositoryImpl implements TeamInfoRepository {
     }
 
     @Override
-    public boolean checkContainData(String dataType, String[] data) {
+    public boolean checkContainData(String dataType, String data) {
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("FROM TeamInfoEntity WHERE ?1 = ?2");
-        query.setParameter(1, dataType);
-        for(String metaData : data){
-            query.setParameter(2, metaData);
-            if(query.list().isEmpty())
-                return false;
-        }
-        return true;
+        Query query = session.createQuery("FROM TeamInfoEntity WHERE teamName = ?1");
+        query.setParameter(1, data);
+        boolean flag = query.list().isEmpty();
+        session.close();
+        return flag;
     }
 
     @Override
-    public boolean writeTeamInfo(TeamInfoEntity teamInfo) {
+    public int writeTeamInfo(TeamInfoEntity teamInfo) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
+        int teamID = -1;
         /*
         TeamInfoEntity test = new TeamInfoEntity();
         test.setTeamName("testTeam");
@@ -47,6 +47,7 @@ public class TeamInfoRepositoryImpl implements TeamInfoRepository {
         */
         try{
             session.save(teamInfo);
+            teamID = teamInfo.getId();
             transaction.commit();
         } catch (Exception e){
             e.printStackTrace();
@@ -54,7 +55,16 @@ public class TeamInfoRepositoryImpl implements TeamInfoRepository {
         } finally {
             session.close();
         }
-        return true;
+        return teamID;
     }
 
+    @Override
+    public TeamInfoEntity findTeamById(int id) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("FROM TeamInfoEntity WHERE id = ?1");
+        query.setParameter(1, id);
+        List<TeamInfoEntity> teamInfo = query.list();
+        session.close();
+        return teamInfo.get(0);
+    }
 }

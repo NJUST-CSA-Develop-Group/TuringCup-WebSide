@@ -29,34 +29,31 @@
     </div>
 </nav>
 <div>
-    <div class="header-blue" style="text-align:center;"><img src="https://turingcup-1257109822.cos.ap-shanghai.myqcloud.com/TuringCup-Imgs/turing%20logo.png" style="max-width:200px;max-height:200px;margin-top:60px;">
-        <h1 class="text-white" style="text-align:center;">报名成功</h1>
+    <div class="header-blue" style="text-align:center;"><img src="https://turingcup-1257109822.cos.ap-shanghai.myqcloud.com/TuringCup-Imgs/success.png" style="max-width:200px;max-height:125px;margin-top:60px;">
+        <h1 class="text-white" style="text-align:center;margin-top:20px;">报名成功</h1>
     </div>
 </div>
-<div class="container" style="text-align:center;margin-top:20px;">
+<div class="container" style="text-align:center;margin-top:20px;max-width: 600px;">
     <h2>您的报名信息如下</h2>
+    <p>本数据为数据库查询数据，请截图保存。如发现有误，请及时联系大赛工作人员</p>
     <div class="table-responsive">
         <table class="table table-striped">
             <tbody>
             <tr>
                 <td style="width:30%;">队伍ID：</td>
-                <td></td>
+                <td>${requestScope.teamID}</td>
             </tr>
             <tr>
                 <td>队名：</td>
-                <td></td>
+                <td>${requestScope.teamName}</td>
             </tr>
             <tr>
                 <td>队伍成员：</td>
-                <td></td>
+                <td>${requestScope.teamMember}</td>
             </tr>
             <tr>
                 <td>报名时间：</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>报名IP：</td>
-                <td></td>
+                <td>${requestScope.signUpTime}</td>
             </tr>
             </tbody>
         </table>
