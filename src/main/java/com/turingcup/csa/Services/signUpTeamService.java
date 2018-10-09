@@ -1,8 +1,10 @@
 package com.turingcup.csa.Services;
 
-import javax.servlet.ServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
-public interface signUpTeamService {
+import javax.servlet.http.HttpServletRequest;
+
+public interface SignUpTeamService {
     boolean checkMember(String members);
-    boolean singUpTeamInfo(ServletRequest request);
+    boolean singUpTeamInfo(HttpServletRequest request);
 }
