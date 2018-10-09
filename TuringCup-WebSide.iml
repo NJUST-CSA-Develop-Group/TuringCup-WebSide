@@ -58,5 +58,7 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="bootstrap" level="application" />
     <orderEntry type="library" name="bootstrap.bundle" level="application" />
+    <orderEntry type="library" name="TCaptcha" level="application" />
+    <orderEntry type="library" name="bootstrapValidator" level="application" />
   </component>
 </module>

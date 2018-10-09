@@ -18,7 +18,7 @@
 </head>
 
 <body>
-<nav class="navbar navbar-light navbar-expand-md fixed-top" style="background:linear-gradient(135deg, #172a74, #21a9af);/*background-repeat:repeat;*/height:40px;">
+<nav class="navbar navbar-light navbar-expand-md fixed-top" style="background:linear-gradient(135deg, #172a74, #21a9af);/*background-repeat:repeat;*/">
     <div class="container-fluid"><a class="navbar-brand text-primary" href="<%=request.getContextPath()%>/signUp/toMainPage.action"><strong>Main Page</strong></a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div
                 class="collapse navbar-collapse" id="navcol-1">
@@ -29,7 +29,7 @@
     </div>
 </nav>
 <div>
-    <div class="header-blue" style="text-align:center;"><img src="https://turingcup-1257109822.cos.ap-shanghai.myqcloud.com/TuringCup-Imgs/turing%20logo.png" style="max-width:200px;max-height:200px;">
+    <div class="header-blue" style="text-align:center;"><img src="https://turingcup-1257109822.cos.ap-shanghai.myqcloud.com/TuringCup-Imgs/turing%20logo.png" style="max-width:200px;max-height:200px;margin-top:60px;">
         <h1 class="text-white" style="text-align:center;">报名成功</h1>
     </div>
 </div>

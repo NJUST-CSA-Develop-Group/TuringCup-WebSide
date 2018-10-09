@@ -24,8 +24,8 @@ public class signUpController {
     @RequestMapping(value = "/teamInfoUpload", method = RequestMethod.POST)
     public ModelAndView teamSignUp(HttpServletRequest request, ModelAndView modelAndView){
         if(signUpService.singUpTeamInfo(request)){
-
             modelAndView.setViewName("signUpSuccess");
+            String verifyCode = request.getParameter("verifyCode");
             return modelAndView;
         }
         modelAndView.setViewName("index");

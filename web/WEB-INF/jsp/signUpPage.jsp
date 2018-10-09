@@ -11,15 +11,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>图灵杯报名</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo+Black">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/styles.min.signUp.css">
+    <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
 </head>
 
 <body>
-<nav class="navbar navbar-light navbar-expand-md fixed-top" style="background:linear-gradient(135deg, #172a74, #21a9af);/*background-repeat:repeat;*/height:40px;">
+<nav class="navbar navbar-light navbar-expand-md fixed-top" style="background:linear-gradient(135deg, #172a74, #21a9af);/*background-repeat:repeat;*/">
     <div class="container-fluid"><a class="navbar-brand text-primary" href="<%=request.getContextPath()%>/signUp/toMainPage.action"><strong>Main Page</strong></a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div
                 class="collapse navbar-collapse" id="navcol-1">
@@ -30,25 +36,29 @@
     </div>
 </nav>
 <div>
-    <div class="header-blue"><img src="https://turingcup-1257109822.cos.ap-shanghai.myqcloud.com/TuringCup-Imgs/turing%20logo.png" width="200" height="200" style="margin-top:30px;max-width:200px;max-height:200px;">
+    <div class="header-blue"><img src="https://turingcup-1257109822.cos.ap-shanghai.myqcloud.com/TuringCup-Imgs/turing%20logo.png" width="200" height="200" style="margin-top:60px;max-width:200px;max-height:200px;">
         <header></header>
         <h1 class="text-white" style="margin-top:30px;">参赛报名</h1>
     </div>
 </div>
 <div class="container" style="max-width:1000px;margin-top:30px;margin-bottom:30px;text-align:center;">
-    <form action="<%=request.getContextPath()%>/signUp/teamInfoUpload.action" method="post">
-        <div class="table-responsive" style="font-family:'Source Sans Pro', sans-serif;text-align:center;vertical-align:middle;">
+    <form id="signUpForm" action="<%=request.getContextPath()%>/signUp/teamInfoUpload.action" method="post">
+        <div class="table-responsive input-group" style="font-family:'Source Sans Pro', sans-serif;text-align:center;vertical-align:middle;">
             <table class="table table-striped table-hover">
                 <tbody>
                 <tr>
                     <td style="width:30%;vertical-align:middle;">队名<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
                     <td style="padding:2px;"><input name="teamName" id="teamName" class="form-control" type="text">
                         <p class="text-secondary" style="margin-bottom:0;">请输入合法合规的正常队名。大赛组委会有权因队名问题取消报名资格。<br></p>
+                        <p id="teamNameNotification" class="notification" style="margin-bottom:0;"></p>
                     </td>
                 </tr>
                 <tr>
                     <td style="vertical-align:middle;">队长姓名<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
-                    <td><input class="form-control"  type="text" name="teamLeaderName" id="teamLeaderName"></td>
+                    <td>
+                        <input class="form-control"  type="text" name="teamLeaderName" id="teamLeaderName">
+                        <p id="teamLeaderNameNotification" class="notification" style="margin-bottom:0;"></p>
+                    </td>
                 </tr>
                 <tr>
                     <td style="vertical-align:middle;">队长学校<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
@@ -90,7 +100,63 @@
                 </tr>
                 </tbody>
             </table>
-        </div><button class="btn btn-primary btn-lg" type="submit" style="text-align:center;min-width:150px;">报名</button></form>
+        </div>
+        <button class="btn btn-primary btn-lg" type="button" style="text-align:center;min-width:150px;" id="TencentCaptcha"
+                      data-appid="2082377806"
+                      data-cbfn="callback">报名</button>
+        <div class="form-group">
+            <label for="test">label</label>
+            <input class="input-control" id="test" name="test" type="text" />
+        </div>
+    </form>
+    <script>
+        window.callback = function(res){
+            console.log(res);
+            // res（未通过验证）= {ret: 1, ticket: null}
+            // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
+            if(res.ret === 0){
+                var verifyCode = document.createElement("input");
+                verifyCode.type = "hidden";
+                verifyCode.name = "verifyCode";
+                verifyCode.value = res.ticket;
+                var form = document.getElementById("signUpForm");
+                form.appendChild(verifyCode);
+                $("#signUpForm").submit();
+                return true;
+            }
+            else{
+                return false;
+            }
+        };
+
+        $(function () {
+            $("#signUpForm").bootstrapValidator({
+                live: 'enabled',
+                submitButtons: '#TencentCaptcha',
+                feedbackIcons:{
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields:{
+                    test:{
+                        notEmpty:{
+                            enable:true,
+                            message: 'test'
+                        },
+                        stringLength:{
+                            min: 6,
+                            max: 30,
+                            message: 'test'
+                        }
+
+                    }
+                }
+
+            });
+        })
+
+    </script>
 </div>
 <div class="footer-clean">
     <footer>
@@ -127,8 +193,7 @@
         </div>
     </footer>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

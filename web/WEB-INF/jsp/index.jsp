@@ -29,18 +29,7 @@
         <h1 style="margin-top:8px;margin-right:auto;margin-left:auto;color:rgb(255,255,255);font-family:'Source Sans Pro', sans-serif;">中兴·图灵杯</h1>
     </div>
 </div>
-<!--
-<div class="row">
-    <div class="col-xs-3" id="myScrollspy">
-        <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="125">
-            <li class="active"><a href="#turingCupIntroduction">图灵杯简介</a></li>
-            <li><a href="#schedule">赛程安排</a></li>
-            <li><a href="#signUp">报名参赛</a></li>
-        </ul>
-    </div>
-</div>
--->
-<nav class="navbar navbar-light navbar-expand-md fixed-top" style="background:linear-gradient(135deg, #172a74, #21a9af);/*background-repeat:repeat;*/height:40px;">
+<nav class="navbar navbar-light navbar-expand-md fixed-top" style="background:linear-gradient(135deg, #172a74, #21a9af);/*background-repeat:repeat;*/">
     <div class="container-fluid"><a class="navbar-brand text-primary" href="<%=request.getContextPath()%>/signUp/toMainPage.action"><strong>Main Page</strong></a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div
                 class="collapse navbar-collapse" id="navcol-1">
