@@ -48,8 +48,8 @@
                 <tbody>
                 <tr>
                     <td style="width:30%;vertical-align:middle;">队名<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
-                    <td ><input name="teamName" id="teamName" class="form-control" type="text">
-                        <p class="text-secondary" style="margin-bottom:0;">请输入合法合规的正常队名。大赛组委会有权因队名问题取消报名资格。<br></p>
+                    <td ><input name="teamName" id="teamName" class="form-control" type="text" placeholder="10个字符内的中文、英文字母、数字和下画线">
+                        <p class="text-secondary" style="margin-bottom:0;">请输入合法合规的正常队名。<br></p>
                         <p id="teamNameNotification" class="notification" style="margin-bottom:0;"></p>
                     </td>
                 </tr>
@@ -82,20 +82,20 @@
                 </tr>
                 <tr>
                     <td style="vertical-align:middle;">QQ<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
-                    <td><input class="form-control" type="text" name="QQ" id="QQ">
-                        <p class="text-secondary" style="margin-bottom:0;">请输入队伍的常用QQ，用于比赛通知发布</p>
+                    <td><input class="form-control" type="text" name="QQ" id="QQ" placeholder="7-11位QQ号码">
+                        <p class="text-secondary" style="margin-bottom:0;">队伍常用QQ，用于比赛通知发布</p>
                     </td>
                 </tr>
                 <tr>
                     <td style="vertical-align:middle;">EMail地址<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
-                    <td><input class="form-control" type="text" name="EMailAddress" id="EMailAddress">
-                        <p class="text-secondary" style="margin-bottom:0;">请输入队伍的常用EMail，用于比赛通知发布<br></p>
+                    <td><input class="form-control" type="text" name="EMailAddress" id="EMailAddress" placeholder="主流email地址">
+                        <p class="text-secondary" style="margin-bottom:0;">队伍常用EMail，用于比赛通知发布<br></p>
                     </td>
                 </tr>
                 <tr>
                     <td style="vertical-align:middle;">电话<span style="color:rgb(0,10,255);font-size:25px;">*</span>：</td>
-                    <td><input class="form-control" type="text" name="telNumber" id="telNumber">
-                        <p class="text-secondary" style="margin-bottom:0;">请输入队伍的常用电话，用于比赛通知发布<br></p>
+                    <td><input class="form-control" type="text" name="telNumber" id="telNumber" placeholder="仅支持国内11位手机号码">
+                        <p class="text-secondary" style="margin-bottom:0;">队伍常用电话，用于比赛通知发布<br></p>
                     </td>
                 </tr>
                 </tbody>
@@ -137,6 +137,7 @@
                     teamName: {
                         required: true,
                         maxlength: 10,
+                        checkTeamName: true,
                         remote:{
                             url: "<%=request.getContextPath()%>/signUp/checkTeamName.action",
                             type: "post",
@@ -149,33 +150,42 @@
                     },
                     teamLeaderName:{
                         required: true,
-                        maxlength: 10
+                        maxlength: 10,
+                        checkLeaderName: true
                     },
                     teamLeaderCollege:{
                         required: true,
-                        maxlength: 10
+                        maxlength: 10,
+                        checkCollege: true
                     },
                     teamMemberOneName:{
-                        maxlength: 10
+                        maxlength: 10,
+                        checkMemberOneName: true
                     },
                     teamMemberOneCollege:{
                         required: function () {
                             return document.getElementById("teamMemberOneName").value !== "";
                         },
-                        maxlength: 10
+                        checkCollegeOneAvailable: true,
+                        maxlength: 10,
+                        checkCollege: true
                     },
                     teamMemberTwoName:{
-                        maxlength: 10
+                        maxlength: 10,
+                        checkMemberTwoName: true
                     },
                     teamMemberTwoCollege:{
                         required: function () {
                             return document.getElementById("teamMemberTwoName").value !== "";
                         },
-                        maxlength: 10
+                        checkCollegeTwoAvailable: true,
+                        maxlength: 10,
+                        checkCollege: true
                     },
                     QQ:{
                         required: true,
-                        rangelength:[7,12]
+                        checkQQ: true
+
                     },
                     EMailAddress:{
                         required: true,
@@ -183,7 +193,7 @@
                     },
                     telNumber:{
                         required: true,
-                        rangelength:[11,11]
+                        checkTelNumber:true
                     }
                 },
                 messages:{
@@ -217,20 +227,139 @@
                         maxlength: "请输入小于10个字符"
                     },
                     QQ:{
-                        required: "请输入QQ",
-                        rangelength: "请输入7-12位的QQ号码"
+                        required: "请输入QQ"
                     },
                     EMailAddress:{
                         required: "请输入Email地址",
                         email:"请输入有效的Email地址"
                     },
                     telNumber:{
-                      required: "请输入电话号码",
-                      rangelength: "请输入11位有效电话号码"
+                      required: "请输入电话号码"
                     }
                 }
             })
-        })
+        });
+
+        jQuery.validator.addMethod("checkQQ", function(value, element) {
+            var regex = /^[1-9]([0-9]{6,10})$/;
+            return this.optional(element) || (regex.test(value));
+        }, "请输入正确的QQ号！");
+
+        jQuery.validator.addMethod("checkTelNumber", function(value, element) {
+            var regex = /^0?(13|14|15|18|17|19)[0-9]{9}$/;
+            return this.optional(element) || (regex.test(value));
+        }, "请输入正确的国内11位手机号码");
+
+        jQuery.validator.addMethod("checkTeamName", function(value, element) {
+            var regex = /^[\w\u4e00-\u9fa5]{2,10}$/;
+            return this.optional(element) || (regex.test(value));
+        }, "请输入正确的队名！");
+
+        jQuery.validator.addMethod("checkCollege", function(value, element) {
+            var regex = /^[\w\u4e00-\u9fa5]{2,12}$/;
+            return this.optional(element) || (regex.test(value));
+        }, "请输入正确的学校名称！");
+
+        jQuery.validator.addMethod("checkLeaderName", function(value, element) {
+            if(value !== ""){
+                var Member1 = $("#teamMemberOneName").val();
+                var Member2 = $("#teamMemberTwoName").val();
+                console.log(Member1);
+                console.log(Member2);
+                if(Member1 != null && Member1 !== ""){
+                    if(this.optional(element) || Member1 === value){
+                        return false;
+                    }
+                }
+                if(Member2 != null && Member2 !== ""){
+                    if(this.optional(element) || Member2 === value){
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else{
+                return true;
+            }
+
+        }, "当前姓名已存在表单内！");
+
+        jQuery.validator.addMethod("checkMemberOneName", function(value, element) {
+            if(value !== ""){
+                var Member1 = $("#teamLeaderName").val();
+                var Member2 = $("#teamMemberTwoName").val();
+                if(Member1 != null && Member1 !== ""){
+                    if(this.optional(element) || Member1 === value){
+                        return false;
+                    }
+                }
+                if(Member2 != null && Member2 !== ""){
+                    if(this.optional(element) || Member2 === value){
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else{
+                return true;
+            }
+
+        }, "当前姓名已存在表单内！");
+
+        jQuery.validator.addMethod("checkMemberTwoName", function(value, element) {
+            if(value !== ""){
+                var Member1 = $("#teamMemberOneName").val();
+                var Member2 = $("#teamLeaderName").val();
+                if(Member1 != null && Member1 !== ""){
+                    if(this.optional(element) || Member1 === value){
+                        return false;
+                    }
+                }
+                if(Member2 != null && Member2 !== ""){
+                    if(this.optional(element) || Member2 === value){
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else{
+                return true;
+            }
+
+        }, "当前姓名已存在表单内！");
+
+        jQuery.validator.addMethod("checkCollegeOneAvailable", function(value, element) {
+            if($("#teamMemberOneName").val() === ""){
+                if(value !== ""){
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            }
+            else{
+                return true;
+            }
+        }, "请先输入组员姓名");
+
+        jQuery.validator.addMethod("checkCollegeTwoAvailable", function(value, element) {
+            if($("#teamMemberTwoName").val() === ""){
+                if(value !== ""){
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            }
+            else{
+                return true;
+            }
+        }, "请先输入组员姓名");
+
+
+
+
+
 
     </script>
 </div>

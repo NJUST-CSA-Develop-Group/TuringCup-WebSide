@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 
@@ -29,27 +29,38 @@ public class signUpController {
     }
 
     @RequestMapping(value = "/teamInfoUpload", method = RequestMethod.POST)
-    public String teamSignUp(HttpServletRequest request) throws Exception{
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        Map<String, String> map = new HashMap<>();
-        map.put("aid", "2077933102");
-        map.put("AppSecretKey", "0PwDClKPnRcbhsANSSJGijg**");
-        map.put("Ticket", request.getParameter("ticket"));
-        map.put("RandStr", request.getParameter("randStr"));
-        map.put("UserIP", request.getRemoteAddr());
+    public String teamSignUp(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        String path = request.getContextPath();
+        response.setContentType("text/html;charset=gb2312");
         ObjectMapper objectMapper = new ObjectMapper();
-        String body = objectMapper.writeValueAsString(map);
-        String url = "https://ssl.captcha.qq.com/ticket/verify";
-        HttpEntity<String> entity = new HttpEntity<>(body, headers);
-        ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        String verifyResult = (String)responseEntity.getBody();
-        if(signUpService.singUpTeamInfo(request)){
-            showTeamInfo.findTeamById(request);
-            return "signUpSuccess";
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://ssl.captcha.qq.com/ticket/verify?" + "aid=2077933102&" + "AppSecretKey=0PwDClKPnRcbhsANSSJGijg**&"
+                + "Ticket=" + request.getParameter("ticket") + "&Randstr=" + request.getParameter("randStr") + "&UserIP=" +
+                request.getRemoteAddr();
+        ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+        Map<String, String> map = objectMapper.readValue((String)responseEntity.getBody(), Map.class);
+        if(Integer.valueOf(map.get("response")) == 1){
+            if(signUpService.singUpTeamInfo(request)){
+                if (showTeamInfo.findTeamById(request)) {
+                    return "signUpSuccess";
+                }
+                else{
+                    response.getWriter().print("<script language=\"javascript\">alert('数据上传成功但数据库读取失败，请联系平台负责人！');" +
+                            "window.location.href='" + path + "/signUp/toMainPage.action'</script>");
+                    return null;
+                }
+            }
+            else{
+                response.getWriter().print("<script language=\"javascript\">alert('数据库写入失败，请重新提交或联系平台负责人！');" +
+                        "window.location.href='" + path + "/signUp/toMainPage.action'</script>");
+                return null;
+            }
         }
-        return "index";
+        else{
+            response.getWriter().print("<script language=\"javascript\">alert('验证码核验失败，请重新打开网页！');" +
+                    "window.location.href='" + path + "/signUp/toMainPage.action'</script>");
+            return null;
+        }
     }
 
     @ResponseBody
