@@ -160,11 +160,12 @@
         data = JSON.parse(ev.data);
         if (data.action === 'result') {
             let elem = document.createElement('tr');
-            elem.innerHTML += '<td>' +  data.match + '<td>';
+            let matchNum = data.match.valueOf() + 1;
+            elem.innerHTML += '<td>' + matchNum + '</td>';
             for (let i = 1; i <= 4; i++) {
                 for(let j = 0; j < 4; j++){
                     if(data.rank[j] === i){
-                        elem.innerHTML += '<td>' + data.id[data.rank[j]] + '</td>';
+                        elem.innerHTML += '<td>' + data.id[j] + '</td>';
                         break;
                     }
                 }
