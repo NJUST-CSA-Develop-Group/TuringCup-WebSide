@@ -60,5 +60,6 @@
     <orderEntry type="library" name="TCaptcha" level="application" />
     <orderEntry type="library" name="bootstrapValidator" level="application" />
     <orderEntry type="library" name="jquery.validate" level="application" />
+    <orderEntry type="library" name="messages_zh" level="application" />
   </component>
 </module>

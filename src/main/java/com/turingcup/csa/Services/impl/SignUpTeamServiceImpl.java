@@ -26,11 +26,14 @@ public class SignUpTeamServiceImpl implements SignUpTeamService {
 
     @Override
     public boolean singUpTeamInfo(HttpServletRequest request) {
+        //后台过滤规则
+        //TODO 完善后台过滤
         if(request.getParameter("teamName") == null || request.getParameter("teamLeaderName") == null ||
             request.getParameter("teamLeaderCollege") == null || request.getParameter("QQ") == null ||
             request.getParameter("telNumber") == null || request.getParameter("EMailAddress") == null){
             return false;
         }
+        //写入队伍数据至实体
         teamInfo.setTeamName(request.getParameter("teamName"));
         teamInfo.setTeamLeaderName(request.getParameter("teamLeaderName"));
         teamInfo.setTeamLeaderCollege(request.getParameter("teamLeaderCollege"));
@@ -46,6 +49,7 @@ public class SignUpTeamServiceImpl implements SignUpTeamService {
             teamInfo.setTeamMember2College(request.getParameter("teamMemberTwoCollege"));
         }
         teamInfo.setSignupTime(new Timestamp(System.currentTimeMillis()));
+        //写入数据库，并查找teamID
         int teamID = teamInfoRepository.writeTeamInfo(teamInfo);
         if(teamID != -1){
             request.setAttribute("teamID", teamID);

@@ -22,6 +22,7 @@ public class signUpController {
     private SignUpTeamService signUpService;
     private ShowTeamInfo showTeamInfo;
 
+    //依赖注入
     @Autowired
     public signUpController(SignUpTeamService signUpService, ShowTeamInfo showTeamInfo){
         this.signUpService = signUpService;
@@ -34,9 +35,14 @@ public class signUpController {
         response.setContentType("text/html;charset=gb2312");
         ObjectMapper objectMapper = new ObjectMapper();
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://ssl.captcha.qq.com/ticket/verify?" + "aid=2077933102&" + "AppSecretKey=0PwDClKPnRcbhsANSSJGijg**&"
-                + "Ticket=" + request.getParameter("ticket") + "&Randstr=" + request.getParameter("randStr") + "&UserIP=" +
-                request.getRemoteAddr();
+
+        //腾讯验证
+        String aid = "2077933102"; //腾讯aid
+        String appSecretKey = "0PwDClKPnRcbhsANSSJGijg**"; //验证密码
+        String url = "https://ssl.captcha.qq.com/ticket/verify?" +
+                "aid=" + aid + "&" + "AppSecretKey=" + appSecretKey + "&"
+                + "Ticket=" + request.getParameter("ticket") + "&Randstr=" + request.getParameter("randStr") +
+                "&UserIP=" + request.getRemoteAddr();
         ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
         Map<String, String> map = objectMapper.readValue((String)responseEntity.getBody(), Map.class);
         if(Integer.valueOf(map.get("response")) == 1){
@@ -63,10 +69,11 @@ public class signUpController {
         }
     }
 
+    //ajax方法 连接数据库 查询是否有重复队名
     @ResponseBody
     @RequestMapping(value = "/checkTeamName")
     public String isTeamNameExist(HttpServletRequest request){
-        if(signUpService.checkTeamName(request.getParameter("teamName"))){
+        if(signUpService.checkTeamName(request.getParameter("teamName"))){ //连接数据库
             return "true";
         }
         else{
@@ -74,13 +81,20 @@ public class signUpController {
         }
     }
 
+    //跳转至报名界面
     @RequestMapping(value = "/signUpPage")
     public String toSignUpPage(){
         return "signUpPage";
     }
 
+    //跳转至主页
     @RequestMapping(value = "toMainPage")
     public String toMainPage(){
         return "index";
+    }
+
+    @RequestMapping(value = "toLive")
+    public String toLivePage(){
+        return "matchLive";
     }
 }

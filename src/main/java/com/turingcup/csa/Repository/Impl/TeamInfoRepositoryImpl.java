@@ -15,39 +15,38 @@ import java.util.List;
 public class TeamInfoRepositoryImpl implements TeamInfoRepository {
     private SessionFactory sessionFactory;
 
+    //依赖注入
     @Autowired
     public TeamInfoRepositoryImpl(SessionFactory sessionFactory){
         this.sessionFactory = sessionFactory;
     }
 
+    //检查是否存在对应数据
     @Override
     public boolean checkContainData(String dataType, String data) {
-        Session session = sessionFactory.openSession();
-        Query query = session.createQuery("FROM TeamInfoEntity WHERE teamName = ?1");
-        query.setParameter(1, data);
-        boolean flag = query.list().isEmpty();
-        session.close();
-        return flag;
+        switch(dataType){
+            case "teamName":
+                Session session = sessionFactory.openSession();
+                Query query = session.createQuery("FROM TeamInfoEntity WHERE teamName = ?1");
+                query.setParameter(1, data);
+                boolean flag = query.list().isEmpty(); //如果返回列表为空则不包含对应数据
+                session.close();
+                return flag;
+
+            default: return false;
+
+        }
     }
 
+    //写入队伍信息
     @Override
     public int writeTeamInfo(TeamInfoEntity teamInfo) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         int teamID = -1;
-        /*
-        TeamInfoEntity test = new TeamInfoEntity();
-        test.setTeamName("testTeam");
-        test.setTeamLeaderName("Chen Sicong");
-        test.setTeamLeaderCollege("NJUST");
-        test.setQq("270712439");
-        test.setEmailAddress("sicong.chen@163.com");
-        test.setTelNumber("15812418818");
-        test.setSignupTime(new Timestamp(System.currentTimeMillis()));
-        */
         try{
             session.save(teamInfo);
-            teamID = teamInfo.getId();
+            teamID = teamInfo.getId(); //队伍ID为自动增长，在save后再获取
             transaction.commit();
         } catch (Exception e){
             e.printStackTrace();
@@ -58,6 +57,7 @@ public class TeamInfoRepositoryImpl implements TeamInfoRepository {
         return teamID;
     }
 
+    //根据ID查询队伍，用于报名信息返回
     @Override
     public TeamInfoEntity findTeamById(int id) {
         Session session = sessionFactory.openSession();

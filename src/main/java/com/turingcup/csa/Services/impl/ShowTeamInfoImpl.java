@@ -20,10 +20,13 @@ public class ShowTeamInfoImpl implements ShowTeamInfo {
     public boolean findTeamById(HttpServletRequest request) {
         int teamID = (int)request.getAttribute("teamID");
         TeamInfoEntity teamInfo = teamInfoRepository.findTeamById(teamID);
+
+        //输出队伍信息
         if(teamInfo != null){
             request.setAttribute("teamName", teamInfo.getTeamName());
-            request.setAttribute("teamMember", teamInfo.getTeamLeaderName() + ", " + teamInfo.getTeamMember1Name() +
-                    ", " + teamInfo.getTeamMember2Name());
+            request.setAttribute("teamMember", teamInfo.getTeamLeaderName() +
+                    (teamInfo.getTeamMember1Name().isEmpty() ? "": ", ") + teamInfo.getTeamMember1Name() +
+                    (teamInfo.getTeamMember2Name().isEmpty() ? "": ", ") + teamInfo.getTeamMember2Name());
             request.setAttribute("signUpTime", teamInfo.getSignupTime());
             return true;
         }
